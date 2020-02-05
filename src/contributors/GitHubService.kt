@@ -18,6 +18,14 @@ import java.util.*
 
 interface GitHubService {
     @GET("orgs/{org}/repos?per_page=100")
+    suspend fun getOrgRepos(@Path("org") org: String) :Response<List<Repo>>
+
+    @GET("repos/{owner}/{repo}/contributors?per_page=100")
+    suspend fun getRepoContributors(
+        @Path("owner") owner: String,
+        @Path("repo") repo: String): Response<List<User>>
+
+    @GET("orgs/{org}/repos?per_page=100")
     fun getOrgReposCall(
         @Path("org") org: String
     ): Call<List<Repo>>
@@ -46,6 +54,7 @@ data class RequestData(
     val password: String,
     val org: String
 )
+
 
 fun createGitHubService(username: String, password: String): GitHubService {
     val authToken = "Basic " + Base64.getEncoder().encode("$username:$password".toByteArray()).toString(Charsets.UTF_8)
